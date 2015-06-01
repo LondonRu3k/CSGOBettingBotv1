@@ -1,52 +1,59 @@
-import json 
-import requests
-from pprint import pprint as pp2
+import re
+import time
+import datetime
+from datetime import datetime, timedelta
+import sqlite3
+import praw # simple interface to the reddit API, also handles rate limiting of requests
+'''USER CONFIGURATION'''
 
-#import os
-#import os.getcwd()
+USERNAME  = "WeatherReportBot"
+#This is the bot's Username. In order to send mail, he must have some amount of Karma.
+PASSWORD  = "woodeye"
+#This is the bot's Password. 
+USERAGENT = "Flair For CSGOBETTING"
+#This is a short description of what the bot does. For example "/u/GoldenSights' Newsletter bot"
+SUBREDDIT = "CSGOBETTING"
+#This is the sub or list of subs to scan for new posts. For a single sub, use "sub1". For multiple subreddits, use "sub1+sub2+sub3+..."
+REPLYSTRING = ['[Here is your Weather Report](www.thefuckingweather.com/?where=)']
+#This is the word you want to put in reply
+MAXPOSTS = 100
+#This is how many posts you want to retrieve all at once. PRAW can download 100 at a time.
+WAIT = 20
+#This is how many seconds you will wait between cycles. The bot is completely inactive during this time.
 
-#--------------------------------------------------------------------------------
-def login(username, password):
-	"""LOGS INTO REDDIT, SAVES COOKIe"""
-	
-	print 'begin log in'
-	UP = {'user': username, 'passwd': password, 'api_type': 'json',}
-	headers = {'user-agent': '/u/LondonRuek\'s API Python Bot', }
-	client = requests.session(headers=headers)
-	
-	r = client.post('http://www.reddit.com/api/login', data=UP)
-	
-	j = json.loads(r.text)
-	
-	client.modhash = j['json']['data']['modhash']
-	print '{USER}\'s modhash is: {mh}'.format(USER=username, mh=client.modhash)
-	client.user = usernamedef name():
-	def name():
-		return '{}\'s client'.format(username)
-		
-	return client
-	
-#--------------------------------------------------------------------------------
-def subredditInfo(client, limit=25, sr='CSGOBOT', 
-				  sorting='', return_json=False):
-	parameters = {'limit': limit,}
-	parameters.update(kwargs)
-	
-	url = r'http://www.reddit.com/r/{sr}/{new}.json'.format(sr=sr, new=sorting) 
-	r = client.get(url,params=parameters)
-	print 'sent URL is', r.urlj - json.loads(r.text)
-	
-	if return_json:
-		return J
-		
-	else:
-		stories = []
-		for story in j['data']['children']:
-			stories.append(story)
-			
-		return stories
-	client = login('USERNAME', 'PASSWORD')
-	
-j - subredditInfo(client, limit=1)
 
-pp2(j)
+'''All done!'''
+r = praw.Reddit(user_agent=USERAGENT)
+try:
+    import bot #This is a file in my python library which contains my Bot's username and password. I can push code to Git without showing credentials
+    USERNAME = bot.getu()
+    PASSWORD = bot.getp()
+    USERAGENT = bot.geta()
+except ImportError:
+    pass
+
+
+while True:
+	subreddit = r.get_subreddit('CSGOBETTING')
+	for submission in subreddit.get_new(limit=20):
+		pbody = submission.selftext.lower()
+
+#(\d\d\w\w\s\w\w\s(june)|\d\d\w\w\s\w\w\s(september))
+
+
+		searchObj = re.search( r'(\d\d:\d\d)', pbody)
+		if searchObj:
+			found = searchObj
+			print (found.group(1)+submission.id)		
+#while True:
+	subreddit = r.get_subreddit('CSGOBETTING')
+	for submission in subreddit.get_new(limit=20):
+		op_text = submission.selftext.lower()
+		op_id = submission.id
+	#	print op_text
+		curTime=datetime.utcnow()
+#		print (str(curTime) +' ~~~~~ '+ op_id) 
+	time.sleep(1800)
+
+
+
