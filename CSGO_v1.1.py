@@ -1,4 +1,5 @@
 import re
+import traceback
 import time
 import datetime
 from datetime import datetime, timedelta
@@ -33,39 +34,32 @@ except ImportError:
     pass
 
 
-while True:
+def main():
 	subreddit = r.get_subreddit('CSGOBETTING')
 	for submission in subreddit.get_new(limit=20):
 		pbody = submission.selftext.lower()
-<<<<<<< HEAD
-		dateObj= re.search(r'(\d\d\w\w\s\w\w\s(January)|\d\d\w\w\s\w\w\s(Febuary)|\d\d\w\w\s\w\w\s(March)|\d\d\w\w\s\w\w\s(April)|\d\d\w\w\s\w\w\s(May)|\d\d\w\w\s\w\w\s(June)|\d\d\w\w\s\w\w\s(July)|\d\d\w\w\s\w\w\s(August)|\d\d\w\w\s\w\w\s(September)|\d\d\w\w\s\w\w\s(October)|\d\d\w\w\s\w\w\s(November)|\d\d\w\w\s\w\w\s(December)', pbody)
+		print submission.link_flair_text
+		ptitle = submission.title.lower()
+	#	print ptitle
+		dateObj= re.search(r'(\d\d[^\d\w]\d\d[^\d\w]\d\d)', ptitle)
 		if dateObj:
 			timeObj = re.search( r'(\d\d:\d\d)', pbody)
 			if timeObj:
 				found = timeObj
-				print (found.group(1)+' of '+ dateObj +'~~~'+submission.id)		
-=======
-
-#(\d\d\w\w\s\w\w\s(june)|\d\d\w\w\s\w\w\s(september))
-
-
-		searchObj = re.search( r'(\d\d:\d\d)', pbody)
-		if searchObj:
-			found = searchObj
-			print (found.group(1)+submission.id)		
->>>>>>> origin/master
-#while True:
-	subreddit = r.get_subreddit('CSGOBETTING')
-	for submission in subreddit.get_new(limit=20):
-		op_text = submission.selftext.lower()
-		op_id = submission.id
-	#	print op_text
-		curTime=datetime.utcnow()
-#		print (str(curTime) +' ~~~~~ '+ op_id) 
-	time.sleep(1800)
-
-<<<<<<< HEAD
-=======
+				pStrDate = (dateObj.group(1) +':'+ found.group(1))
+				timeNow = datetime.utcnow()
+				timeNowP = timeNow + timedelta(hours=4)
+				ptime = datetime.strptime(pStrDate, "%d.%m.%y:%H:%M")
+				if timeNowP > ptime:
+					print True
+				else:
+					print False
+while True:
+	try:
+		main()
+	except Exception as e:
+		traceback.print_exc()
+	print('Running again in %d seconds \n' % WAIT)
+	time.sleep(WAIT)
 
 
->>>>>>> origin/master
